@@ -1,2 +1,2 @@
-# cloud_companion_public
+# Cloud Companion Public Repository
 Releases and support
