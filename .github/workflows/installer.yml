@@ -1,8 +1,5 @@
 name: Main Pipeline
-on:
-  push:
-    branches:
-      - master
+on: push
 jobs:
   job:
     name: ${{ matrix.triplet }}-Build
