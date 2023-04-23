@@ -28,3 +28,6 @@ The main advantage of this tool is that I can run it on my mobile phone, and it 
 [Demo](https://www.linkedin.com/feed/update/urn:li:activity:6728448245539880960/)
 
 [How to install](https://www.linkedin.com/posts/ahmed-yarub-hani-al-nuaimi-77186267_aws-qt-cloud-activity-6731279230157623296-g8MU)
+
+# Discord Channel
+https://discord.gg/y7BubGe9
