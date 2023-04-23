@@ -1,0 +1,15 @@
+[submodule "cmake/QtIosCMake"]
+	path = cmake/QtIosCMake
+	url = https://github.com/ahmedyarub/QtIosCMake.git
+[submodule "cmake/QtWindowsCMake"]
+	path = cmake/QtWindowsCMake
+	url = https://github.com/ahmedyarub/QtWindowsCMake.git
+[submodule "cmake/QtLinuxCMake"]
+	path = cmake/QtLinuxCMake
+	url = https://github.com/ahmedyarub/QtLinuxCMake.git
+[submodule "cmake/QtMacosCMake"]
+	path = cmake/QtMacosCMake
+	url = https://github.com/ahmedyarub/QtMacosCMake.git
+[submodule "cmake/QtGeneratorCMake"]
+	path = cmake/QtGeneratorCMake
+	url = https://github.com/ahmedyarub/QtGeneratorCMake.git

@@ -1,0 +1,6 @@
+# File auto generated with CMake qt_generate_qmldir. Run CMake to regenerate if files changed.
+
+module CloudCompanionStandalone
+
+Main 1.0 Main.qml
+StatusView 1.0 StatusView.qml

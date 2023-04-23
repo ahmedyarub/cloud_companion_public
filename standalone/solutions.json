@@ -1,0 +1,14 @@
+{
+  "problems": [
+    {
+      "name": "docker_not_found",
+      "solutions": [
+        {
+          "friendly_name": "Download Docker",
+          "action": "open_url",
+          "param": "https://docs.docker.com/get-docker/"
+        }
+      ]
+    }
+  ]
+}

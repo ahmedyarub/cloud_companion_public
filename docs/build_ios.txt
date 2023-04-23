@@ -1,0 +1,6 @@
+xcrun simctl list
+
+/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator -CurrentDeviceUDID XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+xcrun simctl install booted CloudCompanion.app
+xcrun simctl launch booted CloudCompanion.app

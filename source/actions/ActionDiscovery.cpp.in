@@ -1,0 +1,8 @@
+#include <actions/ActionDiscovery.hpp>
+@action_headers@
+QMap<QString, CloudCompanion::Action *> CloudCompanion::getActions() {
+    QMap<QString, CloudCompanion::Action *> actions;
+
+@action_inserts@
+    return actions;
+}

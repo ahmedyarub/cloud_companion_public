@@ -1,0 +1,133 @@
+Index: configure.cmake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/configure.cmake b/configure.cmake
+--- a/configure.cmake	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/configure.cmake	(date 1638196847154)
+@@ -384,7 +384,7 @@
+ )
+ qt_feature("shared" PUBLIC
+     LABEL "Building shared libraries"
+-    AUTODETECT NOT UIKIT AND NOT WASM
++    AUTODETECT NOT WASM
+     CONDITION BUILD_SHARED_LIBS
+ )
+ qt_feature_definition("shared" "QT_STATIC" NEGATE PREREQUISITE "!defined(QT_SHARED) && !defined(QT_STATIC)")
+@@ -483,7 +483,7 @@
+ qt_feature("rpath" PUBLIC
+     LABEL "Build with RPATH"
+     AUTODETECT 1
+-    CONDITION BUILD_SHARED_LIBS AND UNIX AND NOT WIN32 AND NOT ANDROID
++    CONDITION BUILD_SHARED_LIBS AND UNIX AND NOT WIN32 AND NOT ANDROID AND NOT IOS
+ )
+ qt_feature_config("rpath" QMAKE_PUBLIC_QT_CONFIG)
+ qt_feature("force_asserts" PUBLIC
+Index: cmake/QtAutoDetect.cmake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake/QtAutoDetect.cmake b/cmake/QtAutoDetect.cmake
+--- a/cmake/QtAutoDetect.cmake	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/cmake/QtAutoDetect.cmake	(date 1638035038333)
+@@ -11,7 +11,7 @@
+     endif()
+ 
+     if(BUILD_SHARED_LIBS)
+-        message(FATAL_ERROR
++        message(WARNING
+             "Building Qt for ${CMAKE_SYSTEM_NAME} as shared libraries is not supported.")
+     endif()
+ endfunction()
+Index: src/plugins/platforms/ios/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/plugins/platforms/ios/CMakeLists.txt b/src/plugins/platforms/ios/CMakeLists.txt
+--- a/src/plugins/platforms/ios/CMakeLists.txt	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/src/plugins/platforms/ios/CMakeLists.txt	(date 1638925562568)
+@@ -34,6 +34,7 @@
+         ${FWMetal}
+         ${FWQuartzCore}
+         ${FWUIKit}
++        ${FWCoreGraphics}
+         Qt::CorePrivate
+         Qt::GuiPrivate
+ )
+@@ -66,4 +67,4 @@
+ 
+ #### Keys ignored in scope 6:.:.:kernel.pro:NOT TARGET___equals____ss_QT_DEFAULT_QPA_PLUGIN:
+ # PLUGIN_EXTENDS = "-"
+-add_subdirectory(optional)
++#add_subdirectory(optional)
+Index: src/plugins/platforms/ios/qioseventdispatcher.mm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/plugins/platforms/ios/qioseventdispatcher.mm b/src/plugins/platforms/ios/qioseventdispatcher.mm
+--- a/src/plugins/platforms/ios/qioseventdispatcher.mm	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/src/plugins/platforms/ios/qioseventdispatcher.mm	(date 1640361861493)
+@@ -213,8 +213,10 @@
+ 
+ using namespace QT_PREPEND_NAMESPACE(QtPrivate);
+ 
+-extern "C" int qt_main_wrapper(int argc, char *argv[])
++int (*main_ptr)(int, char **) = 0;
++extern "C" Q_DECL_EXPORT int qt_main_wrapper(int argc, char *argv[], int (*real_main_ptr)(int, char **))
+ {
++    main_ptr = real_main_ptr;
+     @autoreleasepool {
+         size_t defaultStackSize = 512 * kBytesPerKiloByte; // Same as secondary threads
+ 
+@@ -251,7 +253,7 @@
+     kJumpedFromUserMainTrampoline,
+ };
+ 
+-extern "C" int main(int argc, char *argv[]);
++
+ 
+ static void __attribute__((noinline, noreturn)) user_main_trampoline()
+ {
+@@ -270,7 +272,7 @@
+             qFatal("Could not convert argv[%d] to C string", i);
+     }
+ 
+-    int exitCode = main(argc, argv);
++    int exitCode = main_ptr(argc, argv);
+     delete[] argv;
+ 
+     logActivity.applicationDidFinishLaunching.enter();
+Index: src/plugins/platforms/ios/plugin.mm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/plugins/platforms/ios/plugin.mm b/src/plugins/platforms/ios/plugin.mm
+--- a/src/plugins/platforms/ios/plugin.mm	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/src/plugins/platforms/ios/plugin.mm	(date 1638990566890)
+@@ -70,4 +70,3 @@
+ // so that the plugin's static initializer is included and run.
+ extern "C" void qt_registerPlatformPlugin() {}
+ 
+-Q_IMPORT_PLUGIN(QIOSIntegrationPlugin)
+Index: src/corelib/Qt6CoreMacros.cmake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/corelib/Qt6CoreMacros.cmake b/src/corelib/Qt6CoreMacros.cmake
+--- a/src/corelib/Qt6CoreMacros.cmake	(revision 6652bf2353d807f724f398a15cb22c188830f57c)
++++ b/src/corelib/Qt6CoreMacros.cmake	(date 1640297833167)
+@@ -2056,7 +2056,7 @@
+     if(create_static_plugin)
+         set(type_to_create STATIC)
+     else()
+-        set(type_to_create MODULE)
++        set(type_to_create SHARED)
+     endif()
+ 
+     _qt_internal_add_library(${target} ${type_to_create})

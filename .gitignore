@@ -1,0 +1,9 @@
+/build*
+/.vscode
+.DS_Store
+/private
+/cmake-build-*
+/.vs
+/.idea
+/.cmake
+/.PVS-Studio/

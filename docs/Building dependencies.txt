@@ -1,0 +1,14 @@
+"c:\Program Files\7-Zip\7z.exe" a -mx9 -v99m -sse "E:\cpp\cloud_companion_dependencies\x64-windows-shared-release.7z" "E:\dependency_builds\win64-shared-release\*"
+
+7zz a -mx9 -sse /mnt/e/cpp/cloud_companion_dependencies/x64-linux-shared-release.7z ~/Documents/builds/linux64-shared-release/*
+
+7zz a -mx9 -v99m -sse /mnt/e/cpp/cloud_companion_dependencies/x64-android-shared-release.7z ~/Documents/builds/android64-shared-release/*
+
+7zz a -mx9 -v99m -sse /mnt/e/cpp/cloud_companion_dependencies/wasm32-emscripten-shared-release.7z ~/Documents/builds/wasm32-static-release/*
+
+7zz a -mx9 -v99m ~/CLionProjects/cloud_companion_dependencies/x64-osx-shared-release.7z ~/Documents/builds/macos64-shared-release/*
+
+7zz a -mx9 -v99m ~/CLionProjects/cloud_companion_dependencies/x64-ios-shared-release.7z ~/Documents/builds/ios64-shared-release/*
+
+./vcpkg export aws-sdk-cpp openssl libssh ms-gsl kubernetes opengl --7zip --triplet=<ARCH>-<OS>-release
+Open the generated file and rename the root folder to "vcpkg"

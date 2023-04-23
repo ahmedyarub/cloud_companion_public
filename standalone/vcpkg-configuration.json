@@ -1,0 +1,4 @@
+{
+  "overlay-ports": ["../deps/ports"],
+  "overlay-triplets": ["../deps/triplets"]
+}

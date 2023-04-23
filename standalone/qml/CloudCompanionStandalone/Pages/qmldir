@@ -1,0 +1,10 @@
+# File auto generated with CMake qt_generate_qmldir. Run CMake to regenerate if files changed.
+
+module CloudCompanionStandalone.Pages
+
+CredentialsPage 1.0 CredentialsPage.qml
+DeployPage 1.0 DeployPage.qml
+DockerPage 1.0 DockerPage.qml
+Ec2Page 1.0 Ec2Page.qml
+EcrPage 1.0 EcrPage.qml
+EksPage 1.0 EksPage.qml

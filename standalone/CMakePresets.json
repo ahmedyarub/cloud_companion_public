@@ -1,0 +1,167 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "toolchainFile": "$env{DEPS_PATH}/qt6/lib/cmake/Qt6/qt.toolchain.cmake",
+      "binaryDir": "${sourceParentDir}/${presetName}",
+      "cacheVariables": {
+        "QT_CHAINLOAD_TOOLCHAIN_FILE": "$env{RUNVCPKG_VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_FIND_ROOT_PATH": "$env{DEPS_PATH}/qt6",
+        "VCPKG_TARGET_TRIPLET": "${presetName}-release",
+        "CMAKE_PREFIX_PATH": "$env{DEPS_PATH}/Qaterial",
+        "CMAKE_BUILD_TYPE": "Release",
+        "INSTALL": "TRUE"
+      },
+      "generator": "Ninja",
+      "hidden": true,
+      "environment": {
+        "Qt6_DIR": "$env{DEPS_PATH}/qt6"
+      }
+    },
+    {
+      "name": "x64-windows",
+      "displayName": "Windows Installer using VS2022",
+      "description": "Builds the 64-bit version of the Windows installer on Windows using Visual Studio 2019 generator",
+      "generator": "Visual Studio 17 2022",
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "Visual Studio"
+        }
+      },
+      "inherits": "base"
+    },
+    {
+      "name": "x64-linux",
+      "displayName": "Linux Installer",
+      "description": "Builds the 64-bit version of the Linux installer on Ubuntu using Ninja generator",
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "WSL - Linux"
+        }
+      },
+      "inherits": "base"
+    },
+    {
+      "name": "x64-osx",
+      "displayName": "MacOS Installer",
+      "description": "Builds the 64-bit version of the Macos installer on MacOS using Ninja generator",
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "Default"
+        }
+      },
+      "inherits": "base"
+    },
+    {
+      "name": "x64-android",
+      "displayName": "Android APK",
+      "description": "Builds the 64-bit version of the Android APK on Windows using Ninja generator",
+      "environment": {
+        "ANDROID_NDK": "$env{ANDROID_NDK_LATEST_HOME}",
+        "ANDROID_SDK": "$env{ANDROID_SDK_ROOT}",
+        "ANDROID_NDK_HOME": "$env{ANDROID_NDK_LATEST_HOME}"
+      },
+      "cacheVariables": {
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{ANDROID_NDK_LATEST_HOME}/build/cmake/android.toolchain.cmake",
+        "ANDROID_SDK_ROOT": "$env{ANDROID_SDK_ROOT}",
+        "ANDROID_NDK": "$env{ANDROID_NDK_LATEST_HOME}",
+        "ANDROID_PLATFORM": "31",
+        "ANDROID_ABI": "x86_64",
+        "ANDROID_STL": "c++_shared",
+        "QT_HOST_PATH": "$env{HOST_DEPS_PATH}/qt6",
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH"
+      },
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "WSL - Android"
+        }
+      },
+      "inherits": "base"
+    },
+    {
+      "name": "x64-ios",
+      "displayName": "iOS app",
+      "description": "Builds the 64-bit version of the iOS app on MacOS using Ninja generator",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "QT_HOST_PATH": "$env{HOST_DEPS_PATH}/qt6",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+        "CMAKE_OSX_SYSROOT": "iphonesimulator",
+        "BUILD_SHARED_LIBS": "FALSE"
+      },
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "iOS"
+        }
+      },
+      "inherits": "base"
+    },
+    {
+      "name": "wasm32-emscripten",
+      "displayName": "Build Emscripten",
+      "description": "Builds the 32-bit WASM version using Emscripten",
+      "cacheVariables": {
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "QT_HOST_PATH": "$env{HOST_DEPS_PATH}/qt6",
+        "BUILD_SHARED_LIBS": "FALSE",
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH"
+      },
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "WSL - Emscripten"
+        }
+      },
+      "inherits": "base"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "x64-windows",
+      "configurePreset": "x64-windows",
+      "targets": [
+        "CloudCompanionStandaloneInstallerX64"
+      ]
+    },
+    {
+      "name": "x64-linux",
+      "configurePreset": "x64-linux",
+      "targets": [
+        "CloudCompanionStandaloneAppImage"
+      ]
+    },
+    {
+      "name": "x64-osx",
+      "configurePreset": "x64-osx",
+      "targets": [
+        "CloudCompanionDeploy"
+      ]
+    },
+    {
+      "name": "x64-android",
+      "configurePreset": "x64-android",
+      "targets": [
+        "CloudCompanionStandalone_make_apk"
+      ]
+    },
+    {
+      "name": "x64-ios",
+      "configurePreset": "x64-ios",
+      "targets": [
+        "CloudCompanionStandalone"
+      ]
+    },
+    {
+      "name": "wasm32-emscripten",
+      "configurePreset": "wasm32-emscripten",
+      "targets": [
+        "CloudCompanionStandalone"
+      ]
+    }
+  ]
+}

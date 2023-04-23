@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Cloud Companion
+Comment=Your cloud administration companion
+Exec=CloudCompanionStandalone
+Icon=CloudCompanion
+Categories=Application;

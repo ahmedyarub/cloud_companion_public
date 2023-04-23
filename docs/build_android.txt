@@ -1,0 +1,13 @@
+Remote debugging:
+adb root
+adb forward tcp:1337 tcp:1337
+
+adb shell
+su
+set enforce 0
+gdbserver64 :1337 --attach $(ps -A | grep org.qtproject.aws_companion | awk '{print $2}')
+
+* Other ideas to investigate:
+https://github.com/icota/clion-rust-android-debug-howto
+https://github.com/LaurentGomila/qt-android-cmake
+ndk_gdb

@@ -1,0 +1,19 @@
+Subject: [PATCH] Fix configuration file
+---
+Index: kubernetes/api/CoreV1API.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/kubernetes/api/CoreV1API.c b/kubernetes/api/CoreV1API.c
+--- a/kubernetes/api/CoreV1API.c	(revision 2c71fc47e636114d200decd6e8c543e14f11de26)
++++ b/kubernetes/api/CoreV1API.c	(date 1679411236624)
+@@ -34120,7 +34120,7 @@
+         keyPairQuery_timestamps = keyValuePair_create(keyQuery_timestamps, valueQuery_timestamps);
+         list_addElement(localVarQueryParameters,keyPairQuery_timestamps);
+     }
+-    list_addElement(localVarHeaderType,"text/plain"); //produces
++
+     list_addElement(localVarHeaderType,"application/json"); //produces
+     list_addElement(localVarHeaderType,"application/yaml"); //produces
+     list_addElement(localVarHeaderType,"application/vnd.kubernetes.protobuf"); //produces

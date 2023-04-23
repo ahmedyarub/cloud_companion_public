@@ -1,0 +1,48 @@
+diff --git a/src/aws-cpp-sdk-core/source/http/Scheme.cpp b/src/aws-cpp-sdk-core/source/http/Scheme.cpp
+--- a/src/aws-cpp-sdk-core/source/http/Scheme.cpp	(revision 8939373bde9cd050708a3b166541e9a9d37e2901)
++++ b/src/aws-cpp-sdk-core/source/http/Scheme.cpp	(date 1681691930325)
+@@ -25,6 +25,10 @@
+                 return "http";
+             case Scheme::HTTPS:
+                 return "https";
++            case Scheme::SOCKS5:
++                return "socks5";
++            case Scheme::SOCKS5H:
++                return "socks5h";
+             default:
+                 return "http";
+         }
+@@ -45,6 +49,14 @@
+         {
+             return Scheme::HTTPS;
+         }
++        else if (loweredTrimmedString == "socks5")
++        {
++            return Scheme::SOCKS5;
++        }
++        else if (loweredTrimmedString == "socks5h")
++        {
++            return Scheme::SOCKS5H;
++        }
+ 
+         return Scheme::HTTPS;
+     }
+Index: src/aws-cpp-sdk-core/include/aws/core/http/Scheme.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/aws-cpp-sdk-core/include/aws/core/http/Scheme.h b/src/aws-cpp-sdk-core/include/aws/core/http/Scheme.h
+--- a/src/aws-cpp-sdk-core/include/aws/core/http/Scheme.h	(revision 8939373bde9cd050708a3b166541e9a9d37e2901)
++++ b/src/aws-cpp-sdk-core/include/aws/core/http/Scheme.h	(date 1681691744299)
+@@ -19,7 +19,9 @@
+         enum class Scheme
+         {
+             HTTP,
+-            HTTPS
++            HTTPS,
++            SOCKS5,
++            SOCKS5H
+         };
+ 
+         namespace SchemeMapper

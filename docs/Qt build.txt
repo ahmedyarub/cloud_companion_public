@@ -1,0 +1,56 @@
+git clone -b dev --single-branch git://code.qt.io/qt/qt5.git qt6
+
+All operating systems:
+perl init-repository --module-subset=default,-qt3d,-qtquick3d,-qtactiveqt,-qtcharts,-qtcoap,-qtdatavis3d,-qtdoc,-qtgamepad,-qtlocation,-qtmqtt,-qtmultimedia,-qtopcua,-qtpositioning,-qtqa,-qtremoteobjects,-qtsensors,-qtserialport,-qtspeech,-qttranslations,-qtwebchannel,-qtwebengine,-qtwebsockets,-qtwebview,-qtvirtualkeyboard,-qtconnectivity,-qtgrpc,-qthttpserver,-qtlottie,-qtwayland,-qtquicktimeline,-qt5compat,-qtlanguageserver,-qtnetworkauth,-qtquick3dphysics,-qtquickeffectmaker,-qtscxml,-qtserialbus,-qtshadertools
+
+Windows:
+Only on Windows
+CALL "C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Auxiliary\Build\vcvarsall.bat" amd64
+SET _ROOT=E:\cpp\qt6
+SET PATH=%_ROOT%\qtbase\bin;%_ROOT%\gnuwin32\bin;%PATH%
+SET PATH=%_ROOT%\qtrepotools\bin;%PATH%
+SET _ROOT=
+
+d: & cd d:\builds\qt6 & cd .. & rmdir /s /q qt6 & mkdir qt6 & cd qt6
+
+E:\cpp\qt6\configure.bat -release -shared -prefix "E:\dependency_builds\win64-shared-release\qt6" -opensource -optimize-size -pch -no-feature-testlib -no-feature-sql -no-feature-printsupport -no-feature-designer -no-feature-assistant -no-feature-linguist -skip qtquick3dphysics -no-feature-qml-debug -no-feature-qml-profiler -skip qtquick3dphysics -skip qtgrpc -skip qtconnectivity -skip qtvirtualkeyboard -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+On Ubuntu:
+export PATH=~/Documents/cmake-3.26.0-rc1-linux-x86_64/bin/:/usr/bin/:/home/linuxbrew/.linuxbrew/bin/
+export ANDROID_NDK_HOME=~/Documents/Android/Sdk/ndk/25.2.9519653/
+export ANDROID_SDK_ROOT=~/Documents/Android/Sdk/
+
+cd ~/Documents/builds/qt6 && cd .. && rm -r -f qt6 && mkdir qt6 && cd qt6
+
+Linux:
+~/Documents/cpp/qt6/configure -release -shared -prefix "~/Documents/builds/linux64-shared-release/qt6" -opensource -optimize-size -pch -no-feature-designer -no-feature-assistant -no-feature-linguist -skip qtquick3dphysics -feature-androiddeployqt -skip qtvirtualkeyboard -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+~/Documents/cpp/qt6/configure -release -shared -prefix "~/Documents/builds/android64-shared-release/qt6" -opensource -optimize-size -no-feature-testlib -no-feature-sql -no-feature-printsupport -no-feature-designer -no-feature-assistant -no-feature-linguist -no-feature-qml-debug -no-feature-qml-profiler -skip qtquick3dphysics -skip qtgrpc -skip qtconnectivity -skip qtvirtualkeyboard -platform android-clang -android-ndk "~/Documents/Android/Sdk/ndk/25.2.9519653/" -android-sdk "~/Documents/Android/Sdk/" -qt-host-path "~/Documents/builds/linux64-shared-release/qt6" -android-abis x86_64 -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+
+All operating systems:
+cmake --build . --parallel
+
+cmake --install .
+
+For more info:
+https://wiki.qt.io/Building_Qt_6_from_Git
+https://doc-snapshots.qt.io/qt6-dev/configure-options.html
+
+MacOS:
+~/Documents/cpp/qt6/configure -release -shared -prefix "~/Documents/builds/macos64-shared-release/qt6" -opensource -optimize-size -pch -no-feature-designer -no-feature-assistant -no-feature-linguist -skip qtquick3dphysics -skip qtvirtualkeyboard -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+iOS:
+~/Documents/cpp/qt6/configure -release -shared -prefix "~/Documents/builds/ios64-shared-release/qt6" -opensource -optimize-size -pch -no-feature-designer -no-feature-assistant -no-feature-linguist -skip qtquick3dphysics -skip qtvirtualkeyboard -skip qtquickeffectmaker -platform macx-ios-clang -sdk iphonesimulator -qt-host-path ~/Documents/builds/macos64-shared-release/qt6 -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+Shared iOS build issue:
+https://bugreports.qt.io/browse/QTBUG-85974
+
+Emscripten:
+source "/home/fifo/Documents/emsdk/emsdk_env.sh"
+
+Shared (does not work):
+~/Documents/cpp/qt6/configure -release -shared -prefix "~/Documents/builds/wasm32-shared-release/qt6" -opensource -optimize-size -no-feature-testlib -no-feature-sql -no-feature-printsupport -no-feature-designer -no-feature-assistant -no-feature-linguist -no-feature-qml-debug -no-feature-qml-profiler -skip qtquick3dphysics -skip qtgrpc -skip qtconnectivity -skip qtvirtualkeyboard -platform wasm-emscripten -qt-host-path "~/Documents/builds/linux64-shared-release/qt6" -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF
+
+Static:
+~/Documents/cpp/qt6/configure -platform wasm-emscripten -feature-thread -release -static -prefix "~/Documents/builds/wasm32-static-release/qt6" -opensource -optimize-size -no-feature-testlib -no-feature-sql -no-feature-printsupport -no-feature-designer -no-feature-assistant -no-feature-linguist -no-feature-qml-debug -no-feature-qml-profiler -skip qtquick3dphysics -skip qtgrpc -skip qtconnectivity -skip qtvirtualkeyboard -platform wasm-emscripten -qt-host-path "~/Documents/builds/linux64-shared-release/qt6" -- -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF -DQT_BUILD_BENCHMARKS=OFF -DQT_BUILD_STANDALONE_TESTS=OFF -DQT_EMSCRIPTEN_ASYNCIFY=1

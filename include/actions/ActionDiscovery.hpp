@@ -1,0 +1,12 @@
+#ifndef CLOUDCOMPANIONSTANDALONE_ACTIONDISCOVERY_HPP
+#define CLOUDCOMPANIONSTANDALONE_ACTIONDISCOVERY_HPP
+
+#include <QMap>
+
+#include "Action.hpp"
+
+namespace CloudCompanion {
+  QMap<QString, Action *> getActions();
+}
+
+#endif  // CLOUDCOMPANIONSTANDALONE_ACTIONDISCOVERY_HPP

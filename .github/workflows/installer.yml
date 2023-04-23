@@ -1,0 +1,119 @@
+name: Main Pipeline
+on:
+  push:
+    branches:
+      - master
+jobs:
+  job:
+    name: ${{ matrix.triplet }}-Build
+    runs-on: ${{ matrix.os }}
+    env:
+      DEPS_PATH: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release'
+      HOST_DEPS_PATH: '${{ github.workspace }}/${{ matrix.hostTriplet }}-shared-release'
+      RUNVCPKG_VCPKG_ROOT: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release/vcpkg'
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            target: CloudCompanionStandaloneInstallerX64
+            installerArtifact: '**/CloudCompanionStandaloneInstaller*.exe'
+            extraCMakeArgs: '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL'
+          - os: ubuntu-latest
+            triplet: x64-linux
+            target: CloudCompanionStandaloneAppImage
+            installerArtifact: '**/Cloud*.AppImage'
+          - os: macos-11
+            triplet: x64-osx
+            target: CloudCompanionStandaloneDeploy
+            installerArtifact: '**/*.dmg'
+          - os: ubuntu-latest
+            triplet: x64-android
+            hostTriplet: x64-linux
+            target: CloudCompanionStandalone_make_apk
+            installerArtifact: '**/*.apk'
+          - os: macos-11
+            triplet: x64-ios
+            hostTriplet: x64-osx
+            target: CloudCompanionStandalone
+            installerArtifact: '**/*.app'
+          - os: ubuntu-latest
+            triplet: wasm32-emscripten
+            hostTriplet: x64-linux
+            target: CloudCompanionStandalone
+            installerArtifact: '**/CloudCompanionStandalone.js'
+    steps:
+      - name: Setup Ninja
+        uses: ahmedyarub/setup-ninja@0.0.3
+        with:
+          version: 1.11.1
+      - name: ✅ Checkout Host Dependencies
+        if: matrix.triplet == 'x64-ios' || matrix.triplet == 'x64-android' || matrix.triplet == 'wasm32-emscripten'
+        uses: actions/checkout@v3.3.0
+        with:
+          repository: 'ahmedyarub/cloud_companion_dependencies'
+          ref: '${{ matrix.hostTriplet }}-release'
+          path: '${{ github.workspace }}/${{ matrix.hostTriplet }}-shared-release/'
+          token: ${{ secrets.TOKEN }}
+      - name: 📂 Extract Other Host Dependencies
+        if: matrix.triplet == 'x64-ios' || matrix.triplet == 'x64-android' || matrix.triplet == 'wasm32-emscripten'
+        uses: ahmedyarub/extract-7z-action@v2.0
+        with:
+          pathSource: '${{ github.workspace }}/${{ matrix.hostTriplet }}-shared-release/${{ matrix.hostTriplet }}-shared-release.7z.001'
+          pathTarget: '${{ github.workspace }}/${{ matrix.hostTriplet }}-shared-release/'
+      - name: ✅ Checkout Dependencies
+        uses: actions/checkout@v3.3.0
+        with:
+          repository: 'ahmedyarub/cloud_companion_dependencies'
+          ref: '${{ matrix.triplet }}-release'
+          path: '${{ matrix.triplet }}-shared-release'
+          token: ${{ secrets.TOKEN }}
+      - name: 📂 Extract VCPKG Dependencies
+        uses: ahmedyarub/extract-7z-action@v2.0
+        with:
+          pathSource: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release/vcpkg.7z'
+          pathTarget: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release/'
+      - name: Extract Other Dependencies
+        uses: ahmedyarub/extract-7z-action@v2.0
+        with:
+          pathSource: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release/${{ matrix.triplet }}-shared-release.7z.001'
+          pathTarget: '${{ github.workspace }}/${{ matrix.triplet }}-shared-release'
+      - name: ✅ Checkout
+        uses: actions/checkout@v3.3.0
+        with:
+          path: 'source'
+          submodules: true
+      - name: 📦 Install EMSDK
+        if: matrix.triplet == 'wasm32-emscripten'
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: 3.1.25
+      - name: 🤖 Android - Remove Invalid Platforms
+        if: matrix.triplet == 'x64-android'
+        run: |
+          sudo rm -rf $ANDROID_SDK_ROOT/platforms/*-ext*
+          ls $ANDROID_SDK_ROOT/platforms/
+      - name: 📦 Linux - Install Packages
+        if: matrix.triplet == 'x64-linux'
+        run: |
+          sudo apt update
+          sudo apt install -y libgl1-mesa-dev libcap-dev libxkbcommon-x11-0 libfuse2 libxcb-cursor0       \
+                              libfontconfig1-dev libfreetype6-dev libx11-dev libx11-xcb-dev libxext-dev   \
+                              libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libxcb-glx0-dev          \
+                              libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev     \
+                              libxcb-sync-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev      \
+                              libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev libxcb-xkb-dev \
+                              libxkbcommon-dev libxkbcommon-x11-dev
+      - name: 🔧 Configure
+        run: |
+          cmake -S ${{ github.workspace }}/source/standalone/ --preset ${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE=OFF
+      - name: 🔨 Build Installer
+        run: |
+          cd ${{ github.workspace }}/source/standalone/
+          cmake --build --target ${{ matrix.target }} --config Release --preset ${{ matrix.triplet }} --parallel
+      - name: 💾 Upload CloudCompanion Installer
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ matrix.target }}
+          path: "${{ matrix.installerArtifact }}"
+          retention-days: 1
