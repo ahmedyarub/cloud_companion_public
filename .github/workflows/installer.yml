@@ -63,7 +63,6 @@ jobs:
           repository: 'ahmedyarub/cloud_companion_dependencies'
           ref: '${{ matrix.triplet }}-release'
           path: '${{ matrix.triplet }}-shared-release'
-          token: ${{ secrets.TOKEN }}
       - name: 📂 Extract VCPKG Dependencies
         uses: ahmedyarub/extract-7z-action@v2.0
         with:
