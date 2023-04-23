@@ -51,7 +51,6 @@ jobs:
           repository: 'ahmedyarub/cloud_companion_dependencies'
           ref: '${{ matrix.hostTriplet }}-release'
           path: '${{ github.workspace }}/${{ matrix.hostTriplet }}-shared-release/'
-          token: ${{ secrets.TOKEN }}
       - name: 📂 Extract Other Host Dependencies
         if: matrix.triplet == 'x64-ios' || matrix.triplet == 'x64-android' || matrix.triplet == 'wasm32-emscripten'
         uses: ahmedyarub/extract-7z-action@v2.0
